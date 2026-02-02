@@ -1,0 +1,91 @@
+import csv
+
+def gerar_orcamento():
+    print("--- Sistema de Orçamentos Imobiliária R.M ---")
+    
+    # 1. Escolha do Imóvel
+    print("\nTipos de Imóvel:")
+    print("1 - Apartamento (R$ 700,00)")
+    print("2 - Casa (R$ 900,00)")
+    print("3 - Estúdio (R$ 1200,00)")
+    opcao = input("Escolha o tipo (1/2/3): ")
+
+    aluguel_base = 0
+    tipo_nome = ""
+
+    # 2. Definição de valores base e acréscimos de quartos
+    if opcao == '1':
+        aluguel_base = 700
+        tipo_nome = "Apartamento"
+        quartos = input("Deseja 1 ou 2 quartos? ")
+        if quartos == '2':
+            aluguel_base += 200
+    elif opcao == '2':
+        aluguel_base = 900
+        tipo_nome = "Casa"
+        quartos = input("Deseja 1 ou 2 quartos? ")
+        if quartos == '2':
+            aluguel_base += 250
+    elif opcao == '3':
+        aluguel_base = 1200
+        tipo_nome = "Estúdio"
+    else:
+        print("Opção inválida!")
+        return
+
+    # 3. Vagas de Garagem/Estacionamento
+    vagas_valor = 0
+    if opcao in ['1', '2']:
+        quer_garagem = input("Incluir vaga de garagem? (s/n): ").lower()
+        if quer_garagem == 's':
+            vagas_valor = 300
+    else: # Regra específica para Estúdio
+        quer_vagas = input("Deseja adicionar vagas de estacionamento? (s/n): ").lower()
+        if quer_vagas == 's':
+            qtd_vagas = int(input("Quantas vagas no total? "))
+            if qtd_vagas >= 2:
+                # 250 pelas duas primeiras + 60 por cada adicional
+                vagas_valor = 250 + ((qtd_vagas - 2) * 60)
+            else:
+                vagas_valor = 250 # Mínimo para o pacote de vagas do estúdio
+
+    # 4. Regra de Desconto (Crianças)
+    desconto = 0
+    if opcao == '1':
+        tem_criancas = input("Possui crianças? (s/n): ").lower()
+        if tem_criancas == 'n':
+            desconto = aluguel_base * 0.05
+
+    # 5. Cálculo Final do Aluguel Mensal
+    valor_aluguel_final = aluguel_base + vagas_valor - desconto
+    
+    # 6. Valor do Contrato (R$ 2.000,00 fixo)
+    valor_contrato_total = 2000
+    parcelas_contrato = int(input("Em quantas vezes deseja parcelar o contrato (1 a 5)? "))
+    if parcelas_contrato > 5: parcelas_contrato = 5
+    
+    valor_parcela_contrato = valor_contrato_total / parcelas_contrato
+
+    # 7. Exibição dos Resultados
+    print("-" * 30)
+    print(f"RESUMO DO ORÇAMENTO - {tipo_nome}")
+    print(f"Aluguel Mensal: R$ {valor_aluguel_final:.2f}")
+    print(f"Taxa de Contrato: R$ {valor_contrato_total:.2f} ({parcelas_contrato}x de R$ {valor_parcela_contrato:.2f})")
+    print(f"Total no primeiro mês: R$ {(valor_aluguel_final + valor_parcela_contrato):.2f}")
+    print("-" * 30)
+
+    # 8. Geração do CSV (12 meses)
+    nome_arquivo = "orcamento_anual.csv"
+    with open(nome_arquivo, mode='w', newline='', encoding='utf-8') as file:
+        writer = csv.writer(file)
+        writer.writerow(['Mês', 'Valor Aluguel', 'Parcela Contrato', 'Total Mensal'])
+        
+        for mes in range(1, 13):
+            p_contrato = valor_parcela_contrato if mes <= parcelas_contrato else 0
+            total_mes = valor_aluguel_final + p_contrato
+            writer.writerow([mes, f"{valor_aluguel_final:.2f}", f"{p_contrato:.2f}", f"{total_mes:.2f}"])
+    
+    print(f"\nArquivo '{nome_arquivo}' gerado com sucesso!")
+
+if __name__ == "__main__":
+    gerar_orcamento()
