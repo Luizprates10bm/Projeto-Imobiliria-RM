@@ -3,7 +3,7 @@ import csv
 def gerar_orcamento():
     print("--- Sistema de Orçamentos Imobiliária R.M ---")
     
-    # 1. Escolha do Imóvel
+    # Escolha do Imóvel
     print("\nTipos de Imóvel:")
     print("1 - Apartamento (R$ 700,00)")
     print("2 - Casa (R$ 900,00)")
@@ -13,7 +13,7 @@ def gerar_orcamento():
     aluguel_base = 0
     tipo_nome = ""
 
-    # 2. Definição de valores base e acréscimos de quartos
+    #  Definição de valores base e acréscimos de quartos
     if opcao == '1':
         aluguel_base = 700
         tipo_nome = "Apartamento"
@@ -33,7 +33,7 @@ def gerar_orcamento():
         print("Opção inválida!")
         return
 
-    # 3. Vagas de Garagem/Estacionamento
+    # Vagas de Garagem/Estacionamento
     vagas_valor = 0
     if opcao in ['1', '2']:
         quer_garagem = input("Incluir vaga de garagem? (s/n): ").lower()
@@ -49,24 +49,24 @@ def gerar_orcamento():
             else:
                 vagas_valor = 250 # Mínimo para o pacote de vagas do estúdio
 
-    # 4. Regra de Desconto (Crianças)
+    # Regra de Desconto (Crianças)
     desconto = 0
     if opcao == '1':
         tem_criancas = input("Possui crianças? (s/n): ").lower()
         if tem_criancas == 'n':
             desconto = aluguel_base * 0.05
 
-    # 5. Cálculo Final do Aluguel Mensal
+    # Cálculo Final do Aluguel Mensal
     valor_aluguel_final = aluguel_base + vagas_valor - desconto
     
-    # 6. Valor do Contrato (R$ 2.000,00 fixo)
+    # Valor do Contrato (R$ 2.000,00 fixo)
     valor_contrato_total = 2000
     parcelas_contrato = int(input("Em quantas vezes deseja parcelar o contrato (1 a 5)? "))
     if parcelas_contrato > 5: parcelas_contrato = 5
     
     valor_parcela_contrato = valor_contrato_total / parcelas_contrato
 
-    # 7. Exibição dos Resultados
+    # Exibição dos Resultados
     print("-" * 30)
     print(f"RESUMO DO ORÇAMENTO - {tipo_nome}")
     print(f"Aluguel Mensal: R$ {valor_aluguel_final:.2f}")
@@ -74,7 +74,7 @@ def gerar_orcamento():
     print(f"Total no primeiro mês: R$ {(valor_aluguel_final + valor_parcela_contrato):.2f}")
     print("-" * 30)
 
-    # 8. Geração do CSV (12 meses)
+    # Geração do CSV (12 meses)
     nome_arquivo = "orcamento_anual.csv"
     with open(nome_arquivo, mode='w', newline='', encoding='utf-8') as file:
         writer = csv.writer(file)
